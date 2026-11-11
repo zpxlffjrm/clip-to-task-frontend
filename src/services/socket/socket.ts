@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 import * as SecureStore from "expo-secure-store"
 import { io as lookup, Socket } from "socket.io-client"
 
-const SOCKET_PATH = "/socket.io"
-const SOCKET_TRANSPORTS = ["websocket"] as const
-const SOCKET_TIMEOUT_MS = 10000
-const SOCKET_USER_CHANGE_DEBOUNCE_MS = 0
+const ACCESS_TOKEN_KEY = "accessToken"
 
 function disconnectSocket(socketRef: React.RefObject<Socket | null>) {
   if (socketRef.current) {
@@ -17,63 +14,37 @@ function disconnectSocket(socketRef: React.RefObject<Socket | null>) {
 
 function useIo() {
   const socketRef = useRef<Socket | null>(null)
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [queryParams, setQueryParams] = useState("")
-
-  const token = SecureStore.getItemAsync("accessToken")
 
   useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-      debounceTimerRef.current = null
-    }
-
-    disconnectSocket(socketRef)
-    setQueryParams("")
-
-    debounceTimerRef.current = setTimeout(() => {
-      debounceTimerRef.current = null
-    }, SOCKET_USER_CHANGE_DEBOUNCE_MS)
-
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-        debounceTimerRef.current = null
-      }
+      disconnectSocket(socketRef)
     }
   }, [])
 
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-      }
-      disconnectSocket(socketRef)
-    }
-  }, [token])
+  // Stable across renders so callers' effects don't re-run (and reconnect)
+  // every time the component re-renders.
+  const socket = useCallback(async (namespace: string) => {
+    const token = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY)
+    if (!token) return null
 
-  const socket = useCallback(
-    async (namespace: string) => {
-      if (!token) return null
+    disconnectSocket(socketRef)
 
-      console.log("token", await token)
+    const url = `${process.env.EXPO_PUBLIC_SOCKET_HOST}${namespace}`
 
-      const url = `${process.env.EXPO_PUBLIC_SOCKET_HOST}${namespace}`
+    const instance = lookup(url, {
+      // Read the token on every (re)connect so a refreshed token is used.
+      auth: (cb) => {
+        SecureStore.getItemAsync(ACCESS_TOKEN_KEY)
+          .then((latest) => cb({ token: latest ?? token }))
+          .catch(() => cb({ token }))
+      },
+      withCredentials: true,
+    })
 
-      const instance = lookup(url, {
-        auth: {
-          token: await token,
-        },
+    socketRef.current = instance
 
-        withCredentials: true,
-      })
-
-      socketRef.current = instance
-
-      return instance
-    },
-    [token],
-  )
+    return instance
+  }, [])
 
   return socket
 }
