@@ -3,6 +3,7 @@ import { Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { Button, Host } from "@expo/ui"
+import { Link } from "expo-router"
 
 import { useLogin } from "@/features/auth/Login/hooks"
 
@@ -59,6 +60,12 @@ export const Login = () => {
         <Host matchContents>
           <Button label="로그인" onPress={handleSubmit(onSubmit)} />
         </Host>
+
+        <Link href="/signup" push>
+          <Text className="text-sm text-gray-500">
+            계정이 없나요? <Text className="font-bold">회원가입</Text>
+          </Text>
+        </Link>
       </View>
     </SafeAreaView>
   )
