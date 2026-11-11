@@ -1,3 +1,9 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+ 
+@import "nativewind/theme";
+
 :root {
   --font-display:
     Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
@@ -6,4 +12,53 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+
+:root{
+  --color-background: var(--color-slate-950);
+  --color-card: var(--color-slate-900);
+  --color-surface: var(--color-slate-900);
+  --color-border: var(--color-slate-800);
+
+  --color-brand-primary: var(--color-indigo-500);
+  --color-brand-secondary: var(--color-violet-500);
+  --color-brand-light: var(--color-indigo-300);
+  --color-action: var(--color-emerald-500);
+
+  --radius-card: 12px;
+  --radius-badge: 6px;
+  --radius-button: 10px;
+}
+
+@theme {
+  --color-background: var(--color-slate-950);
+  --color-card: var(--color-slate-900);
+  --color-surface: var(--color-slate-900);
+  --color-border: var(--color-slate-800);
+
+  --color-brand-primary: var(--color-indigo-500);
+  --color-brand-secondary: var(--color-violet-500);
+  --color-brand-light: var(--color-indigo-300);
+  --color-action: var(--color-emerald-500);
+
+  --radius-card: 12px;
+  --radius-badge: 6px;
+  --radius-button: 10px;
+
+}
+
+/* Custom Utilities for NativeWind v5 */
+@utility card-surface {
+  background-color: var(--color-surface);
+  border-width: 1px;
+  border-color: var(--color-border-subtle);
+  border-radius: var(--radius-card);
+}
+
+@utility ai-gradient-card {
+  background-color: rgba(99, 102, 241, 0.08);
+  border-width: 1px;
+  border-color: rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-card);
 }

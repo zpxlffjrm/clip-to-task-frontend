@@ -1,0 +1,65 @@
+{
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+
+  "importOrder": [
+    "react",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/shared/(.*/)?api$",
+    "",
+    "^@/shared/(.*/)components$",
+    "",
+    "^@/shared/(.*/)?components$",
+    "",
+    "^@/shared/(.*/)?constants$",
+    "",
+    "^@/shared/(.*/)?hooks$",
+    "",
+    "^@/shared/(.*/)?services$",
+    "",
+    "^@/shared/(.*/)?stores$",
+    "",
+    "^@/shared/api/types",
+    "",
+    "^@/shared/types",
+    "",
+    "^@/shared/(.*/)?utils$",
+    "",
+    "^@/shared",
+    "",
+    "^@/features/(.*)/constants",
+    "",
+    "^@/features/(.*)/hooks$",
+    "",
+    "^@/features/(.*)/types$",
+    "",
+    "^@/features/(.*)/utils",
+    "",
+    "^@/features/(.*)/ui",
+    "",
+    "^@/features",
+    "",
+    "^@/(?!global\\.css$).*",
+    "",
+    "^[./]",
+
+    "",
+
+    "^(?!.*global\\.css$).*\\.css$",
+    "",
+
+    "^@/global\\.css$"
+  ],
+
+  "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+  "importOrderTypeScriptVersion": "5.0.0",
+  "importOrderCaseSensitive": false,
+
+  "importOrderGroupNamespaceSpecifiers": true,
+  "tabWidth": 2,
+  "semi": false
+}

@@ -1,27 +1,37 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Theme tokens mirrored from `src/global.css` custom variables.
  */
 
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
+/** Hex equivalents of Tailwind tokens used in global.css */
+const palette = {
+  background: '#020617', // slate-950
+  card: '#0f172a', // slate-900
+  surface: '#0f172a', // slate-900
+  border: '#1e293b', // slate-800
+  brandPrimary: '#6366f1', // indigo-500
+  brandSecondary: '#8b5cf6', // violet-500
+  brandLight: '#a5b4fc', // indigo-300
+  action: '#10b981', // emerald-500
+  text: '#f8fafc', // slate-50
+  textSecondary: '#94a3b8', // slate-400
+} as const;
+
+const themeColors = {
+  ...palette,
+  /** Surface alias for themed components */
+  backgroundElement: palette.surface,
+  /** Border alias for selected / elevated surfaces */
+  backgroundSelected: palette.border,
+} as const;
+
+/** CSS defines a single dark palette — applied to both schemes */
 export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+  light: themeColors,
+  dark: themeColors,
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
@@ -50,6 +60,12 @@ export const Fonts = Platform.select({
     mono: 'var(--font-mono)',
   },
 });
+
+export const Radius = {
+  card: 12,
+  badge: 6,
+  button: 10,
+} as const;
 
 export const Spacing = {
   half: 2,

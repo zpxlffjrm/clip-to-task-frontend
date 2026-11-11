@@ -41,3 +41,10 @@ example
 # generated native folders
 /ios
 /android
+
+
+# GoogleService-Info.plist
+GoogleService-Info.plist
+google-services.json
+
+.env*
