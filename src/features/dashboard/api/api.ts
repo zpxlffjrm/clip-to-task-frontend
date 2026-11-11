@@ -22,3 +22,13 @@ export const getDashboardActionItems = async (
   })
   return response.data
 }
+
+export const updateActionItemCompletion = async (
+  id: string,
+  isCompleted: boolean,
+): Promise<DashboardActionItem> => {
+  const response = await apiClient.patch(`/action-items/${id}/completion`, {
+    isCompleted,
+  })
+  return response.data
+}

@@ -1,13 +1,17 @@
-import { ArrowRight, Circle } from "lucide-react-native"
+import { ArrowRight, Circle, CircleCheck } from "lucide-react-native"
 import { useMemo } from "react"
 import { Pressable, Text, View } from "react-native"
 
 import { format } from "date-fns"
 
-import { useGetDashboardActionItems } from "@/features/dashboard/hooks"
+import {
+  useGetDashboardActionItems,
+  useUpdateActionItemCompletion,
+} from "@/features/dashboard/hooks"
 
 export const ActionItems = () => {
   const { data: actionItems } = useGetDashboardActionItems()
+  const { mutate: updateCompletion } = useUpdateActionItemCompletion()
 
   const ActionItemsItem = useMemo(() => {
     return actionItems || []
@@ -30,10 +34,24 @@ export const ActionItems = () => {
           <Pressable
             className="flex-row items-center border-b border-slate-800/80 py-2"
             key={item.id}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: item.isCompleted }}
+            accessibilityLabel={item.task}
+            onPress={() =>
+              updateCompletion({ id: item.id, isCompleted: !item.isCompleted })
+            }
           >
-            <Circle size={16} color="#64748B" />
+            {item.isCompleted ? (
+              <CircleCheck size={16} color="#818CF8" />
+            ) : (
+              <Circle size={16} color="#64748B" />
+            )}
             <Text
-              className="ml-2.5 flex-1 text-xs font-medium text-slate-200"
+              className={`ml-2.5 flex-1 text-xs font-medium ${
+                item.isCompleted
+                  ? "text-slate-500 line-through"
+                  : "text-slate-200"
+              }`}
               numberOfLines={1}
             >
               {item.task}
