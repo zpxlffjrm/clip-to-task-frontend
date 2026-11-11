@@ -1,6 +1,7 @@
 import { CheckCircle2 } from "lucide-react-native"
 import { useCallback, useEffect, useState } from "react"
 import { DimensionValue, Text, View } from "react-native"
+import type { Socket } from "socket.io-client"
 
 import queryClient from "@/services/api/queryClient"
 import { useIo } from "@/services/socket"
@@ -15,15 +16,28 @@ export const DashboardProcessing = () => {
   }>()
 
   useEffect(() => {
+    let cancelled = false
+    let socket: Socket | null = null
+    const onProgress = (data: typeof processing) => setProcessing(data)
+
     io("/meeting-progress")
-      .then((socket) => {
-        socket?.on("meeting.progress", (data) => {
-          setProcessing(data)
-        })
+      .then((instance) => {
+        if (cancelled) {
+          instance?.disconnect()
+          return
+        }
+        socket = instance
+        socket?.on("meeting.progress", onProgress)
       })
       .catch((error) => {
         console.log("error", error)
       })
+
+    return () => {
+      cancelled = true
+      socket?.off("meeting.progress", onProgress)
+      socket?.disconnect()
+    }
   }, [io])
 
   const Progress = useCallback(() => {
